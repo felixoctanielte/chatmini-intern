@@ -1,6 +1,6 @@
 "use client";
-import { Search, X, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { Search, RotateCcw } from "lucide-react";
 import { Contact } from "../types/chat";
 
 interface SidebarProps {
@@ -9,6 +9,7 @@ interface SidebarProps {
   setActiveChatId: (id: number) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (v: boolean) => void;
+  onRefresh: () => void;
 }
 
 export default function Sidebar({
@@ -17,16 +18,16 @@ export default function Sidebar({
   setActiveChatId,
   sidebarOpen,
   setSidebarOpen,
+  onRefresh,
 }: SidebarProps) {
   const [search, setSearch] = useState("");
 
   const filteredContacts = contacts.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <>
-
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden"
@@ -40,15 +41,21 @@ export default function Sidebar({
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0`}
       >
-
-        <div className="p-4 border-b flex items-center gap-2 font-bold text-orange-500 text-lg">
-          ChatMini
+        <div className="p-6 border-b flex items-center gap-3 font-bold text-orange-500 text-lg">
+          <img
+            src="/Logo Chatrigo 5.png"
+            alt="Chatrigo Logo"
+            className="h-8 w-auto object-contain"
+          />
+          <span>Chatrigo</span>
         </div>
-
 
         <div className="p-4 border-b flex justify-between items-center">
           <h1 className="font-semibold text-gray-700">Obrolan</h1>
-          <RotateCcw className="w-4 h-4 text-gray-500 cursor-pointer hover:text-orange-500" />
+          <RotateCcw
+            onClick={onRefresh}
+            className="w-4 h-4 text-gray-500 cursor-pointer hover:text-orange-500 active:scale-90 transition"
+          />
         </div>
 
         <div className="p-3 border-b">
@@ -68,9 +75,14 @@ export default function Sidebar({
           {filteredContacts.map((c) => (
             <div
               key={c.id}
-              onClick={() => setActiveChatId(c.id)}
+              onClick={() => {
+                setActiveChatId(c.id);
+                setSidebarOpen(false);
+              }}
               className={`p-4 cursor-pointer border-b transition ${
-                activeChatId === c.id ? "bg-orange-50 border-r-4 border-orange-500" : "hover:bg-gray-100"
+                activeChatId === c.id
+                  ? "bg-orange-50 border-r-4 border-orange-500"
+                  : "hover:bg-gray-100"
               }`}
             >
               <div className="flex justify-between">

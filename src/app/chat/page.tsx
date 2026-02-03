@@ -9,12 +9,9 @@ import { Message } from "../../types/chat";
 
 export default function ChatPage() {
   const [activeChatId, setActiveChatId] = useState<number>(DUMMY_CONTACTS[0].id);
-
   const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES);
-
   const [inputText, setInputText] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const activeContact = DUMMY_CONTACTS.find(c => c.id === activeChatId);
@@ -41,17 +38,19 @@ export default function ChatPage() {
     setInputText("");
   };
 
+  const handleRefreshChats = () => {
+    setMessages(DUMMY_MESSAGES);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         contacts={DUMMY_CONTACTS}
         activeChatId={activeChatId}
-        setActiveChatId={(id: number) => {
-          setActiveChatId(id);
-          setSidebarOpen(false);
-        }}
+        setActiveChatId={setActiveChatId}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        onRefresh={handleRefreshChats}
       />
 
       <div className="flex-1 flex flex-col bg-white">
