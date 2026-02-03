@@ -9,7 +9,7 @@ import { Message } from "../../types/chat";
 
 export default function ChatPage() {
   const [activeChatId, setActiveChatId] = useState<number>(DUMMY_CONTACTS[0].id);
-  const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES)
+  const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES);
 
   const [inputText, setInputText] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, activeChatId]);
 
-  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
@@ -63,7 +63,6 @@ export default function ChatPage() {
           ))}
           <div ref={bottomRef} />
         </div>
-        
 
         <ChatInput
           inputText={inputText}

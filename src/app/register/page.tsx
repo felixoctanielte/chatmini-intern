@@ -45,12 +45,14 @@ export default function RegisterPage() {
     }
   };
 
+  const isInvalid = !username || !email || !password || !confirm || !!emailError || !!passError || !!confirmError;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600 px-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
 
         <div className="text-center space-y-3">
-          <img src="/Logo Chatrigo 5.png" className="mx-auto w-20 object-contain" />
+          <img src="/Logo Chatrigo 5.png" className="mx-auto w-20 object-contain" alt="Logo" />
           <h1 className="text-3xl font-bold">Create Account</h1>
           <p className="text-sm text-gray-500">Join Chatrigo and start your journey</p>
         </div>
@@ -131,9 +133,9 @@ export default function RegisterPage() {
 
         <button
           onClick={handleRegister}
-          disabled={!username || !email || !password || !confirm || emailError || passError || confirmError}
+          disabled={isInvalid}
           className={`w-full py-3 rounded-xl font-semibold transition ${
-            !username || !email || !password || !confirm || emailError || passError || confirmError
+            isInvalid
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-orange-500 text-white hover:opacity-90"
           }`}
@@ -147,8 +149,8 @@ export default function RegisterPage() {
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
-        <button className="w-full border rounded-xl py-3 text-sm font-medium flex justify-center items-center gap-2 hover:bg-gray-50 transition">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
+        <button type="button" className="w-full border rounded-xl py-3 text-sm font-medium flex justify-center items-center gap-2 hover:bg-gray-50 transition">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
           Google
         </button>
 
