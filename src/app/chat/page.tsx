@@ -4,55 +4,71 @@ import Sidebar from "../../components/Sidebar";
 import ChatHeader from "../../components/ChatHeader";
 import MessageBubble from "../../components/MessageBubble";
 import ChatInput from "../../components/ChatInput";
-
+import { DUMMY_CONTACTS, DUMMY_MESSAGES } from "../../data/dummyData";
+import { Message } from "../../types/chat";
 
 export default function ChatPage() {
-  const [activeChat, setActiveChat] = useState("Brightly Virya");
+  const [activeChatId, setActiveChatId] = useState<number>(DUMMY_CONTACTS[0].id);
 
-  const [messages, setMessages] = useState({
-    "Brightly Virya": [
-      { id: 1, text: "Halo! Ada yang bisa dibantu?", sender: "bot" },
-      { id: 2, text: "Saya mau tanya produk.", sender: "user" },
-    ],
-    "AI Business Advisor": [
-      { id: 1, text: "Konsultasi bisnis tersedia.", sender: "bot" },
-    ],
-  });
+  const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES);
 
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState<string>("");
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const activeContact = DUMMY_CONTACTS.find(c => c.id === activeChatId);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, activeChat]);
+  }, [messages, activeChatId]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
+    const newMessage: Message = {
+      id: Date.now(),
+      text: inputText,
+      sender: "user",
+    };
+
     setMessages((prev) => ({
       ...prev,
-      [activeChat]: [
-        ...(prev[activeChat] || []),
-        { id: Date.now(), text: inputText, sender: "user" },
-      ],
+      [activeChatId]: [...(prev[activeChatId] || []), newMessage],
     }));
 
     setInputText("");
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar activeChat={activeChat} setActiveChat={setActiveChat} />
-      <div className="flex-1 flex flex-col">
-        <ChatHeader activeChat={activeChat} />
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
-          {(messages[activeChat] || []).map((m) => (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar
+        contacts={DUMMY_CONTACTS}
+        activeChatId={activeChatId}
+        setActiveChatId={(id: number) => {
+          setActiveChatId(id);
+          setSidebarOpen(false);
+        }}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+
+      <div className="flex-1 flex flex-col bg-white">
+        <ChatHeader contact={activeContact} setSidebarOpen={setSidebarOpen} />
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {(messages[activeChatId] || []).map((m) => (
             <MessageBubble key={m.id} text={m.text} sender={m.sender} />
           ))}
           <div ref={bottomRef} />
         </div>
-        <ChatInput inputText={inputText} setInputText={setInputText} handleSendMessage={handleSendMessage} />
+
+        <ChatInput
+          inputText={inputText}
+          setInputText={setInputText}
+          handleSendMessage={handleSendMessage}
+        />
       </div>
     </div>
   );

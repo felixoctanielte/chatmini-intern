@@ -1,52 +1,87 @@
 "use client";
-import { Search } from "lucide-react";
-import { DUMMY_CONTACTS } from "../data/dummyContacts";
+import { Search, X, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { Contact } from "../types/chat";
 
-export default function Sidebar({ activeChat, setActiveChat }) {
+interface SidebarProps {
+  contacts: Contact[];
+  activeChatId: number;
+  setActiveChatId: (id: number) => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (v: boolean) => void;
+}
+
+export default function Sidebar({
+  contacts,
+  activeChatId,
+  setActiveChatId,
+  sidebarOpen,
+  setSidebarOpen,
+}: SidebarProps) {
   const [search, setSearch] = useState("");
 
-  const filtered = DUMMY_CONTACTS.filter(c =>
+  const filteredContacts = contacts.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="w-80 border-r flex flex-col bg-white shadow-sm hidden md:flex">
-      <div className="p-4 border-b">
-        <h1 className="font-bold text-xl text-orange-500">Chatrigo</h1>
-      </div>
+    <>
 
-      <div className="p-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search..."
-            className="w-full bg-gray-100 rounded-md py-2 pl-10 text-sm"
-          />
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <div
+        className={`fixed md:static z-40 top-0 left-0 h-full w-72 bg-white border-r
+        transform transition-transform duration-300
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0`}
+      >
+
+        <div className="p-4 border-b flex items-center gap-2 font-bold text-orange-500 text-lg">
+          ChatMini
         </div>
-      </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {filtered.map((c) => (
-          <div
-            key={c.id}
-            onClick={() => setActiveChat(c.name)}
-            className={`p-4 flex gap-3 border-b cursor-pointer hover:bg-orange-50 ${
-              activeChat === c.name ? "bg-orange-50 border-r-4 border-orange-500" : ""
-            }`}
-          >
-            <div className="w-10 h-10 rounded-full bg-orange-400 text-white flex items-center justify-center font-bold">
-              {c.name[0]}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm">{c.name}</h3>
+
+        <div className="p-4 border-b flex justify-between items-center">
+          <h1 className="font-semibold text-gray-700">Obrolan</h1>
+          <RotateCcw className="w-4 h-4 text-gray-500 cursor-pointer hover:text-orange-500" />
+        </div>
+
+        <div className="p-3 border-b">
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Cari kontak..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-gray-100 rounded-md py-2 pl-10 text-sm focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="overflow-y-auto">
+          {filteredContacts.map((c) => (
+            <div
+              key={c.id}
+              onClick={() => setActiveChatId(c.id)}
+              className={`p-4 cursor-pointer border-b transition ${
+                activeChatId === c.id ? "bg-orange-50 border-r-4 border-orange-500" : "hover:bg-gray-100"
+              }`}
+            >
+              <div className="flex justify-between">
+                <h3 className="font-semibold text-sm">{c.name}</h3>
+                <span className="text-[10px] text-gray-400">{c.time}</span>
+              </div>
               <p className="text-xs text-gray-500 truncate">{c.lastMsg}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
