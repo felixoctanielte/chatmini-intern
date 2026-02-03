@@ -1,14 +1,12 @@
 import { Message } from "../types/chat"
 
 export const DUMMY_CONTACTS = [
-  { id: 1, name: "AI Business Advisor", lastMsg: "Strategi scaling bisnis kamu bisa kita optimasi.", time: "09:12", online: true },
-  { id: 2, name: "Rina Customer Support", lastMsg: "Halo kak, ada yang bisa dibantu?", time: "08:45", online: true },
-  { id: 3, name: "Project Team UI/UX", lastMsg: "Wireframe revisi sudah aku upload ya.", time: "Kemarin", online: false },
-  { id: 4, name: "Damar Backend Dev", lastMsg: "API endpoint sudah live", time: "Kemarin", online: false },
-  { id: 5, name: "Ayunda Marketing", lastMsg: "Campaign minggu depan kita push ya", time: "Senin", online: true },
-];
-
-
+  { id: 1, name: "AI Business Advisor", lastMsg: "Konsultasi bisnis dengan AI", time: "4 Jan" },
+  { id: 2, name: "204251498303683", lastMsg: "Anda: Intent menanyakan produk...", time: "4 Jan" },
+  { id: 3, name: "227929069816302", lastMsg: "Anda: Konfirmasi pembayaran...", time: "4 Jan" },
+  { id: 4, name: "Brightly Virya", lastMsg: "Anda: Wah mantap kak!", time: "5 Jan" },
+  { id: 5, name: "Ayunda", lastMsg: "Anda: Tanya informasi...", time: "4 Jan" },
+]
 
 export const DUMMY_MESSAGES: Record<number, Message[]> = {
   1: [

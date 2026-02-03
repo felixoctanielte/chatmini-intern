@@ -9,7 +9,8 @@ import { Message } from "../../types/chat";
 
 export default function ChatPage() {
   const [activeChatId, setActiveChatId] = useState<number>(DUMMY_CONTACTS[0].id);
-  const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES);
+  const [messages, setMessages] = useState<Record<number, Message[]>>(DUMMY_MESSAGES)
+
   const [inputText, setInputText] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -62,6 +63,7 @@ export default function ChatPage() {
           ))}
           <div ref={bottomRef} />
         </div>
+        
 
         <ChatInput
           inputText={inputText}
