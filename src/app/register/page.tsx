@@ -35,15 +35,33 @@ export default function RegisterPage() {
     else setConfirmError("");
   };
 
-  const handleRegister = () => {
-    validateEmail(email);
-    validatePassword(password);
-    validateConfirm(confirm);
+  const handleRegister = async () => {
+  validateEmail(email);
+  validatePassword(password);
+  validateConfirm(confirm);
 
-    if (username && email && password && confirm && !emailError && !passError && !confirmError) {
-      router.push("/chat");
+  if (!username || !email || !password || !confirm || emailError || passError || confirmError) return;
+
+  try {
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      alert("Register berhasil! Silakan login");
+      router.push("/login");
+    } else {
+      alert(data.error || "Register gagal");
     }
-  };
+  } catch (err) {
+    alert("Server error");
+  }
+};
+
 
   const isInvalid = !username || !email || !password || !confirm || !!emailError || !!passError || !!confirmError;
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Search, RotateCcw } from "lucide-react";
+import { Search, RotateCcw, LogOut } from "lucide-react";
 import { Contact } from "../types/chat";
 
 interface SidebarProps {
@@ -26,6 +26,13 @@ export default function Sidebar({
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const handleLogout = async () => {
+    const res = await fetch("/api/logout", { method: "POST" });
+    if (res.ok) {
+      window.location.href = "/login";
+    }
+  };
+
   return (
     <>
       {sidebarOpen && (
@@ -36,7 +43,7 @@ export default function Sidebar({
       )}
 
       <div
-        className={`fixed md:static z-40 top-0 left-0 h-full w-72 bg-white border-r
+        className={`fixed md:static z-40 top-0 left-0 h-full w-72 bg-white border-r flex flex-col
         transform transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0`}
@@ -54,7 +61,7 @@ export default function Sidebar({
           <h1 className="font-semibold text-gray-700">Obrolan</h1>
           <RotateCcw
             onClick={onRefresh}
-            className="w-4 h-4 text-gray-500 cursor-pointer hover:text-orange-500 active:scale-90 transition"
+            className="w-4 h-4 text-gray-400 cursor-pointer hover:text-orange-500 active:scale-90 transition"
           />
         </div>
 
@@ -71,7 +78,7 @@ export default function Sidebar({
           </div>
         </div>
 
-        <div className="overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
           {filteredContacts.map((c) => (
             <div
               key={c.id}
@@ -92,6 +99,16 @@ export default function Sidebar({
               <p className="text-xs text-gray-500 truncate">{c.lastMsg}</p>
             </div>
           ))}
+        </div>
+
+        <div className="p-4 border-t">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full p-3 text-gray-600 hover:bg-red-50 hover:text-red-500 rounded-xl transition group"
+          >
+            <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
         </div>
       </div>
     </>
