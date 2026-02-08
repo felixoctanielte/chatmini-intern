@@ -34,38 +34,47 @@ export default function ChatClient({ userId, initialChats }: ChatClientProps) {
   }, [messages, activeChatId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
+  e.preventDefault();
+  if (!inputText.trim()) return;
 
-    const currentInput = inputText;
-    setInputText("");
+  const currentInput = inputText;
 
-    try {
-      const res = await fetch("/api/chat/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: currentInput,
-          chatId: activeChatId,
-        }),
-      });
+  // ✅ Optimistic UI (langsung tampil)
+  setMessages(prev => ({
+    ...prev,
+    [activeChatId]: [
+      ...(prev[activeChatId] || []),
+      { id: Date.now(), text: currentInput, sender: "user" },
+    ],
+  }));
 
-      const data = await res.json();
+  setInputText("");
 
-      if (data.userMessage && data.botResponse) {
-        setMessages(prev => ({
-          ...prev,
-          [activeChatId]: [
-            ...(prev[activeChatId] || []),
-            { id: data.userMessage.id, text: data.userMessage.content, sender: "user" },
-            { id: data.botResponse.id, text: data.botResponse.content, sender: "bot" },
-          ],
-        }));
-      }
-    } catch (error) {
-      console.error("Failed to send message:", error);
+  try {
+    const res = await fetch("/api/chat/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: currentInput,
+        chatId: activeChatId,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.botResponse) {
+      setMessages(prev => ({
+        ...prev,
+        [activeChatId]: [
+          ...(prev[activeChatId] || []),
+          { id: data.botResponse.id, text: data.botResponse.content, sender: "bot" },
+        ],
+      }));
     }
-  };
+  } catch (error) {
+    console.error("Failed to send message:", error);
+  }
+};
 
   const handleRefreshChats = async () => {
     window.location.reload();
